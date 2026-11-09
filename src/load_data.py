@@ -8,12 +8,8 @@ def load_data(carts_df, valid_products):
 
     try:
 
-        # Clear existing records (full refresh)
-        cursor.execute("DELETE FROM cart_products")
-        cursor.execute("DELETE FROM carts")
+        # STEP 1: Prepare cart records
 
-
-        # INSERT CART RECORDS
         cart_columns = [
             "cart_id",
             "user_id",
@@ -31,6 +27,9 @@ def load_data(carts_df, valid_products):
             )
         ]
 
+
+        # STEP 2: Insert or update carts
+
         cart_query = """
         INSERT INTO carts (
             cart_id,
@@ -41,12 +40,20 @@ def load_data(carts_df, valid_products):
             total_quantity
         )
         VALUES (%s, %s, %s, %s, %s, %s)
+
+        ON DUPLICATE KEY UPDATE
+            user_id = VALUES(user_id),
+            total = VALUES(total),
+            discounted_total = VALUES(discounted_total),
+            total_products = VALUES(total_products),
+            total_quantity = VALUES(total_quantity)
         """
 
         cursor.executemany(cart_query, cart_records)
 
 
-        # INSERT VALID PRODUCT RECORDS
+        # STEP 3: Prepare valid product records
+
         product_columns = [
             "cart_id",
             "product_id",
@@ -66,6 +73,9 @@ def load_data(carts_df, valid_products):
             )
         ]
 
+
+        # STEP 4: Insert or update products
+
         product_query = """
         INSERT INTO cart_products (
             cart_id,
@@ -78,17 +88,26 @@ def load_data(carts_df, valid_products):
             discounted_total
         )
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+
+        ON DUPLICATE KEY UPDATE
+            title = VALUES(title),
+            price = VALUES(price),
+            quantity = VALUES(quantity),
+            total = VALUES(total),
+            discount_percentage = VALUES(discount_percentage),
+            discounted_total = VALUES(discounted_total)
         """
 
         cursor.executemany(product_query, product_records)
 
 
-        # COMMIT TRANSACTION
+        # STEP 5: Commit transaction
+
         connection.commit()
 
-        print("\nData successfully loaded!")
-        print("Cart records inserted:", len(cart_records))
-        print("Product records inserted:", len(product_records))
+        print("\nIncremental data loading successful!")
+        print("Cart records processed:", len(cart_records))
+        print("Product records processed:", len(product_records))
 
 
     except Exception as error:
