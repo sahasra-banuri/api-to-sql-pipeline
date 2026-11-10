@@ -16,3 +16,6 @@ data/rejected/*
 
 # IDE settings
 .vscode/
+
+# Generated reports and pipeline run history
+data/reports/*
