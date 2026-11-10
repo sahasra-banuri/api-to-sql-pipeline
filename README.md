@@ -156,6 +156,16 @@ The pipeline retrieves API data, processes and validates records, generates qual
 
 The project includes unit tests and opt-in MySQL integration tests.
 
+### Manual Incremental Loading Check
+
+The repository also includes a manual script for verifying
+incremental loading behaviour.
+
+Run it from the project root:
+
+```bash
+python tests/manual_incremental_check.py
+
 ### Run unit tests
 
 ```bash
