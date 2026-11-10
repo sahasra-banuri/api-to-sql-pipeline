@@ -81,11 +81,12 @@ api-to-sql-pipeline/
 │   └── analysis_queries.sql
 │
 ├── tests/
-│   ├── conftest.py
-│   ├── test_transform.py
-│   ├── test_validation.py
-│   └── test_database_integration.py
-│
+├── conftest.py
+├── test_transform.py
+├── test_validation.py
+├── test_database_integration.py
+└── manual_incremental_test.py
+|
 ├── .gitignore
 ├── pytest.ini
 ├── requirements.txt
